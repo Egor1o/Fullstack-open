@@ -8,8 +8,8 @@ sequenceDiagram
     
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
     activate server
-    within the request body there is data from the submitted form
-    server inserts a new JSON object into the "notes" array
+    Note right of browser: within the request body there is a data from the submitted form
+    Note right of browser: server inserts new JSON object into the "notes" array
     server-->>browser: URL redirection to location '/notes'
     deactivate server
 
