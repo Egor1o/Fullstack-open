@@ -37,13 +37,13 @@ const App = () => {
 
   const Content = (props) => {
     return (
-      props.parts.map(part => {return <Part part={part}/>})
+      props.course.parts.map(part => {return <Part part={part}/>})
     )
   }
 
   const Total = (props) => {
     let sum = 0
-    props.parts.forEach(elem => {sum = sum + elem.exercises})
+    props.course.parts.forEach(elem => {sum = sum + elem.exercises})
     return (
       <>
       <p>Number of exercises {sum}</p>
@@ -54,8 +54,8 @@ const App = () => {
   return (
     <div>
       <Header course={course}/>
-      <Content parts={course.parts}/>
-      <Total parts={course.parts}/>
+      <Content course={course}/>
+      <Total course={course}/>
     </div>
   )
 }
