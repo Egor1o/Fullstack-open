@@ -8,6 +8,18 @@ const Button = ({ handleClick, text }) => {
 	)
 }
 
+const BasicStat = ({ stat }) => {
+	return (
+		<>
+			<li>
+				<p>{stat}</p>
+			</li>
+		</>
+	)
+}
+
+const ComputedStat = ()
+
 const positivePercentage = (positive, all) => {
 	return all == 0 ? 0 : (positive / all) * 100
 }
@@ -25,15 +37,9 @@ const StatDisplay = ({ stats }) => {
 			<br></br>
 			<h2>statistics</h2>
 			<ul>
-				<li>
-					<p>good: {stats[0]}</p>
-				</li>
-				<li>
-					<p>neutral: {stats[1]}</p>
-				</li>
-				<li>
-					<p>bad: {stats[2]}</p>
-				</li>
+				<BasicStat stat={stats[0]} />
+				<BasicStat stat={stats[1]} />
+				<BasicStat stat={stats[2]} />
 				<li>
 					<p>all: {sum}</p>
 				</li>
