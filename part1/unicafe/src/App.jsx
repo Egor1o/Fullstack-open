@@ -8,9 +8,22 @@ const Button = ({ handleClick, text }) => {
 	)
 }
 
+const positivePercentage = (positive, all) => {
+	return all == 0 ? 0 : (positive / all) * 100
+}
+
+const average = (all) => {
+	const length = all[0] + all[1] + all[2]
+	return length == 0 ? 0 : (all[0] + -1 * all[2]) / length
+}
+
 const StatDisplay = ({ stats }) => {
+	let sum = 0
+	stats.forEach((stat) => (sum = sum + stat))
 	return (
 		<>
+			<br></br>
+			<h2>statistics</h2>
 			<ul>
 				<li>
 					<p>good: {stats[0]}</p>
@@ -20,6 +33,15 @@ const StatDisplay = ({ stats }) => {
 				</li>
 				<li>
 					<p>bad: {stats[2]}</p>
+				</li>
+				<li>
+					<p>all: {sum}</p>
+				</li>
+				<li>
+					<p>average: {average(stats)}</p>
+				</li>
+				<li>
+					<p>positive: {positivePercentage(stats[0], sum)} %</p>
 				</li>
 			</ul>
 		</>
@@ -43,8 +65,6 @@ const App = () => {
 			<Button handleClick={() => addPositive(good)} text='good' />
 			<Button handleClick={addNeutral} text='neutral' />
 			<Button handleClick={addBad} text='bad' />
-			<br></br>
-			<h2>statistics</h2>
 			<StatDisplay stats={[good, neutral, bad]} />
 		</div>
 	)
