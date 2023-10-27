@@ -18,8 +18,6 @@ const BasicStat = ({ stat }) => {
 	)
 }
 
-const ComputedStat = ()
-
 const positivePercentage = (positive, all) => {
 	return all == 0 ? 0 : (positive / all) * 100
 }
