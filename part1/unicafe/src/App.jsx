@@ -8,48 +8,64 @@ const Button = ({ handleClick, text }) => {
 	)
 }
 
-const BasicStat = ({ stat }) => {
-	return (
-		<>
-			<li>
-				<p>{stat}</p>
-			</li>
-		</>
-	)
-}
-
 const positivePercentage = (positive, all) => {
-	return all == 0 ? 0 : (positive / all) * 100
+	return all === 0 ? 0 : (positive / all) * 100
 }
 
 const average = (all) => {
 	const length = all[0] + all[1] + all[2]
-	return length == 0 ? 0 : (all[0] + -1 * all[2]) / length
+	return length === 0 ? 0 : (all[0] + -1 * all[2]) / length
 }
 
-const StatDisplay = ({ stats }) => {
+const summary = (stats) => {
 	let sum = 0
 	stats.forEach((stat) => (sum = sum + stat))
+	return sum
+}
+
+const StatisticLine = ({ text, value }) => {
+	return (
+		<>
+			<p>
+				{text}
+				{value}
+			</p>
+		</>
+	)
+}
+
+const Statistics = ({ stats }) => {
+	const sum = summary(stats)
 	return (
 		<>
 			<br></br>
 			<h2>statistics</h2>
-			<ul>
-				<BasicStat stat={stats[0]} />
-				<BasicStat stat={stats[1]} />
-				<BasicStat stat={stats[2]} />
-				<li>
-					<p>all: {sum}</p>
-				</li>
-				<li>
-					<p>average: {average(stats)}</p>
-				</li>
-				<li>
-					<p>positive: {positivePercentage(stats[0], sum)} %</p>
-				</li>
-			</ul>
+			<StatisticLine text={'good: '} value={stats[0]} />
+			<StatisticLine text={'neutral: '} value={stats[1]} />
+			<StatisticLine text={'bad: '} value={stats[2]} />
+			<StatisticLine text={'sum: '} value={sum} />
+			<StatisticLine text={'average: '} value={average(stats)} />
+			<StatisticLine
+				text={'positive: '}
+				value={positivePercentage(stats[0], sum) + ' %'}
+			/>
 		</>
 	)
+}
+
+const History = (props) => {
+	console.log(props)
+	console.log(summary(props.stats))
+	if (summary(props.stats) == 0) {
+		return (
+			<div>
+				<br></br>
+				<p>No feedback given</p>
+			</div>
+		)
+	}
+
+	return <Statistics stats={props.stats} />
 }
 
 const App = () => {
@@ -69,7 +85,7 @@ const App = () => {
 			<Button handleClick={() => addPositive(good)} text='good' />
 			<Button handleClick={addNeutral} text='neutral' />
 			<Button handleClick={addBad} text='bad' />
-			<StatDisplay stats={[good, neutral, bad]} />
+			<History stats={[good, neutral, bad]} />
 		</div>
 	)
 }
