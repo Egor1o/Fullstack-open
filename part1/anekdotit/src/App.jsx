@@ -32,10 +32,9 @@ const App = () => {
 
 	const giveVote = () => {
 		const pointsCopy = [...points]
-		console.log(selected, 'tfd')
 		pointsCopy[selected] += 1
 		setPoints(pointsCopy)
-		console.log(pointsCopy)
+		// next line is added so that user can't vote multiple time the same anecdote right away
 		chooseAnecdote()
 	}
 
