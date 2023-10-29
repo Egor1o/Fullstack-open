@@ -11,12 +11,50 @@ const Person = ({ name, number }) => {
 }
 
 const Info = ({ persons }) => {
-	//console.log(persons)
 	return persons.map((human) => {
 		return (
 			<Person key={human.name} name={human.name} number={human.number} />
 		)
 	})
+}
+
+const NumbersDisplay = ({persons}) =>{
+	return <><h2>Numbers</h2>
+			<div>
+				<Info persons={persons} />
+			</div>
+			</>
+}
+
+const Filter = ({search, handleSearchChnage}) =>{
+	return <>
+		<h2>Phonebook</h2>
+			<div>
+			filter shown with 
+		<input value={search} onChange={handleSearchChnage}/>
+		</div>
+	</>
+}
+
+const PersonForm = ({handleAddClick, handleNameChange, handleNumberChange, newInfo}) => {
+	return (<>
+	<h2>Add a new</h2>
+			<form onSubmit={handleAddClick}>
+				<div>
+					name:
+					<input value={newInfo.name} onChange={handleNameChange} />
+				</div>
+				<div>
+					number:
+					<input
+						value={newInfo.number}
+						onChange={handleNumberChange}
+					/>
+				</div>
+				<div>
+					<button type='submit'>add</button>
+				</div>
+			</form></>)
 }
 
 const App = () => {
@@ -31,14 +69,13 @@ const App = () => {
 
 	const handleAddClick = (event) => {
 		event.preventDefault()
-		//console.log(newInfo)
-		//console.log(persons.map((elem) => elem.name).includes(newInfo.name))
 		if (persons.map((elem) => elem.name).includes(newInfo.name)) {
 			alert(`${newInfo} is already added to phonebook`)
 		} else {
 			const copy = [...persons]
 			copy.push({ name: newInfo.name, number: newInfo.number })
 			setPersons(copy)
+			setNewInfo({name: '', number: ''})
 		}
 	}
 
@@ -64,32 +101,9 @@ const App = () => {
 	
 	return (
 		<div>
-			<h2>Numbers</h2>
-			<div>
-			filter shown with 
-			<input value={serach} onChange={handleSearchChnage}/>
-			</div>
-			<h2>Phonebook</h2>
-			<form onSubmit={handleAddClick}>
-				<div>
-					name:
-					<input value={newInfo.name} onChange={handleNameChange} />
-				</div>
-				<div>
-					number:
-					<input
-						value={newInfo.number}
-						onChange={handleNumberChange}
-					/>
-				</div>
-				<div>
-					<button type='submit'>add</button>
-				</div>
-			</form>
-			<h2>Numbers</h2>
-			<div>
-				<Info persons={sortedSearch(persons,serach.toLowerCase())} />
-			</div>
+			<Filter search={serach} handleSearchChnage={handleSearchChnage}/>
+			<PersonForm handleAddClick={handleAddClick} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} newInfo={newInfo} />
+			<NumbersDisplay persons={sortedSearch(persons,serach.toLowerCase())}/>
 		</div>
 	)
 }
