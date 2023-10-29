@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Person = ({ name, number }) => {
 	return (
@@ -66,6 +67,14 @@ const App = () => {
 	])
 	const [newInfo, setNewInfo] = useState({ name: '', number: '' })
 	const [serach, setSearch] = useState('')
+
+	//do not forget to turn server on!
+	useEffect(() =>{axios
+		.get('http://localhost:3002/persons')
+		.then(response => {
+			console.log(response.data)
+			setPersons(response.data)
+		})},[])
 
 	const handleAddClick = (event) => {
 		event.preventDefault()
