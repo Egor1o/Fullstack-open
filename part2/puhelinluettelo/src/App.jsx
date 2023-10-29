@@ -21,9 +21,13 @@ const Info = ({ persons }) => {
 
 const App = () => {
 	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas', number: '+358146146146' },
+		{ name: 'Arto Hellas', number: '040-123456' },
+		{ name: 'Ada Lovelace', number: '39-44-5323523' },
+		{ name: 'Dan Abramov', number: '12-43-234345' },
+		{ name: 'Mary Poppendieck', number: '39-23-6423122' }
 	])
 	const [newInfo, setNewInfo] = useState({ name: '', number: '' })
+	const [serach, setSearch] = useState('')
 
 	const handleAddClick = (event) => {
 		event.preventDefault()
@@ -46,8 +50,25 @@ const App = () => {
 		setNewInfo({ ...newInfo, number: event.target.value })
 	}
 
+
+	 const handleSearchChnage = (event) => {
+		setSearch(event.target.value)
+	}
+
+	const sortedSearch = (persons, search) => {
+		if (search !== '') {
+		 return persons.filter(person => person.name.toLowerCase().startsWith(search))
+		}
+		else return persons
+	}
+	
 	return (
 		<div>
+			<h2>Numbers</h2>
+			<div>
+			filter shown with 
+			<input value={serach} onChange={handleSearchChnage}/>
+			</div>
 			<h2>Phonebook</h2>
 			<form onSubmit={handleAddClick}>
 				<div>
@@ -67,7 +88,7 @@ const App = () => {
 			</form>
 			<h2>Numbers</h2>
 			<div>
-				<Info persons={persons} />
+				<Info persons={sortedSearch(persons,serach.toLowerCase())} />
 			</div>
 		</div>
 	)
