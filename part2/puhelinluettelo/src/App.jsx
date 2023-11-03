@@ -1,5 +1,5 @@
-import axios from 'axios'
 import { useEffect, useState } from 'react'
+import * as contactService from './services/contactService'
 
 const Person = ({ name, number }) => {
 	return (
@@ -30,13 +30,13 @@ const NumbersDisplay = ({ persons }) => {
 	)
 }
 
-const Filter = ({ search, handleSearchChnage }) => {
+const Filter = ({ search, handleSearchChange }) => {
 	return (
 		<>
 			<h2>Phonebook</h2>
 			<div>
 				filter shown with
-				<input value={search} onChange={handleSearchChnage} />
+				<input value={search} onChange={handleSearchChange} />
 			</div>
 		</>
 	)
@@ -74,14 +74,11 @@ const PersonForm = ({
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newInfo, setNewInfo] = useState({ name: '', number: '' })
-	const [serach, setSearch] = useState('')
+	const [search, setSearch] = useState('')
 
 	//do not forget to turn server on!
 	useEffect(() => {
-		axios.get('http://localhost:3002/persons').then((response) => {
-			console.log(response.data)
-			setPersons(response.data)
-		})
+		contactService.getContacts().then((contacts) => setPersons(contacts))
 	}, [])
 
 	const handleAddClick = (event) => {
@@ -90,18 +87,14 @@ const App = () => {
 			alert(`${newInfo.name} is already added to phonebook`)
 		} else {
 			const copy = [...persons]
-			const newObj = {
+			const newContact = {
 				name: newInfo.name,
 				number: newInfo.number,
 			}
-			copy.push({ name: newInfo.name, number: newInfo.number })
-			axios
-				.post(`http://localhost:3002/persons`, newObj)
-				.then((response) => {
-					console.log(response)
-					setPersons(copy)
-					setNewInfo({ name: '', number: '' })
-				})
+			contactService.addContact(newContact).then(() => {
+				setPersons(copy.concat(newContact))
+				setNewInfo({ name: '', number: '' })
+			})
 		}
 	}
 
@@ -113,7 +106,7 @@ const App = () => {
 		setNewInfo({ ...newInfo, number: event.target.value })
 	}
 
-	const handleSearchChnage = (event) => {
+	const handleSearchChange = (event) => {
 		setSearch(event.target.value)
 	}
 
@@ -127,7 +120,7 @@ const App = () => {
 
 	return (
 		<div>
-			<Filter search={serach} handleSearchChnage={handleSearchChnage} />
+			<Filter search={search} handleSearchChange={handleSearchChange} />
 			<PersonForm
 				handleAddClick={handleAddClick}
 				handleNameChange={handleNameChange}
@@ -135,7 +128,7 @@ const App = () => {
 				newInfo={newInfo}
 			/>
 			<NumbersDisplay
-				persons={sortedSearch(persons, serach.toLowerCase())}
+				persons={sortedSearch(persons, search.toLowerCase())}
 			/>
 		</div>
 	)
