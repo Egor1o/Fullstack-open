@@ -14,4 +14,16 @@ const addContact = async (newContact) => {
 		})
 }
 
-export { getContacts, addContact }
+const deleteContact = async (contact) => {
+	return axios
+		.delete(`http://localhost:3002/persons/${contact.id}`)
+		.then((response) => {
+			response.data
+		})
+}
+
+//TODO
+//rewrite (put request)
+//delete ()
+
+export { getContacts, addContact, deleteContact }

@@ -1,30 +1,42 @@
 import { useEffect, useState } from 'react'
 import * as contactService from './services/contactService'
 
-const Person = ({ name, number }) => {
+const Person = ({ name, number, handleDelete }) => {
 	return (
 		<>
-			<p>
-				{name} {number}
-			</p>
+			<form
+				onSubmit={() => {
+					handleDelete(name)
+				}}
+			>
+				<p>
+					{name} {number}
+				</p>
+				<button type='submit'>delete</button>
+			</form>
 		</>
 	)
 }
 
-const Info = ({ persons }) => {
+const Info = ({ persons, handleDelete }) => {
 	return persons.map((human) => {
 		return (
-			<Person key={human.name} name={human.name} number={human.number} />
+			<Person
+				key={human.name}
+				name={human.name}
+				number={human.number}
+				handleDelete={handleDelete}
+			/>
 		)
 	})
 }
 
-const NumbersDisplay = ({ persons }) => {
+const NumbersDisplay = ({ persons, handleDelete }) => {
 	return (
 		<>
 			<h2>Numbers</h2>
 			<div>
-				<Info persons={persons} />
+				<Info persons={persons} handleDelete={handleDelete} />
 			</div>
 		</>
 	)
@@ -79,7 +91,7 @@ const App = () => {
 	//do not forget to turn server on!
 	useEffect(() => {
 		contactService.getContacts().then((contacts) => setPersons(contacts))
-	}, [])
+	}, [persons])
 
 	const handleAddClick = (event) => {
 		event.preventDefault()
@@ -110,6 +122,24 @@ const App = () => {
 		setSearch(event.target.value)
 	}
 
+	const handleDelete = (name) => {
+		console.log('slndfln dosnnbibo ')
+		console.log(name)
+		if (confirm(`Delete ${name}`)) {
+			const copy = persons.filter((person) => {
+				person.name !== name
+			})
+			const toBeDeleted = persons.filter(
+				(person) => person.name === name
+			)[0]
+			console.log(toBeDeleted)
+			contactService
+				.deleteContact(toBeDeleted)
+				.then((response) => response)
+			setPersons(copy)
+		}
+	}
+
 	const sortedSearch = (persons, search) => {
 		if (search !== '') {
 			return persons.filter((person) =>
@@ -129,6 +159,7 @@ const App = () => {
 			/>
 			<NumbersDisplay
 				persons={sortedSearch(persons, search.toLowerCase())}
+				handleDelete={handleDelete}
 			/>
 		</div>
 	)
