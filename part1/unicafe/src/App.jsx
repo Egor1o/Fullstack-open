@@ -26,10 +26,12 @@ const summary = (stats) => {
 const StatisticLine = ({ text, value }) => {
 	return (
 		<>
-			<tr>
-				<td>{text}</td>
-				<td>{value}</td>
-			</tr>
+			<tbody>
+				<tr>
+					<td>{text}</td>
+					<td>{value}</td>
+				</tr>
+			</tbody>
 		</>
 	)
 }
@@ -40,15 +42,17 @@ const Statistics = ({ stats }) => {
 		<>
 			<br></br>
 			<h2>statistics</h2>
-			<StatisticLine value={stats[0]} text='good: ' />
-			<StatisticLine value={stats[1]} text='neutral: ' />
-			<StatisticLine value={stats[2]} text='bad: ' />
-			<StatisticLine value={sum} text='all: ' />
-			<StatisticLine value={average(stats)} text='average:  ' />
-			<StatisticLine
-				value={positivePercentage(stats[0], sum) + ' %'}
-				text='positive:  '
-			/>
+			<table>
+				<StatisticLine value={stats[0]} text='good: ' />
+				<StatisticLine value={stats[1]} text='neutral: ' />
+				<StatisticLine value={stats[2]} text='bad: ' />
+				<StatisticLine value={sum} text='all: ' />
+				<StatisticLine value={average(stats)} text='average:  ' />
+				<StatisticLine
+					value={positivePercentage(stats[0], sum) + ' %'}
+					text='positive:  '
+				/>
+			</table>
 		</>
 	)
 }
