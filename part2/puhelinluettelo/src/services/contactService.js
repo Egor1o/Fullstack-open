@@ -10,7 +10,7 @@ const addContact = async (newContact) => {
 	return axios
 		.post(`http://localhost:3002/persons`, newContact)
 		.then((response) => {
-			response.data
+			return response.data
 		})
 }
 
@@ -22,8 +22,12 @@ const deleteContact = async (contact) => {
 		})
 }
 
-//TODO
-//rewrite (put request)
-//delete ()
+const refreshData = async (person) => {
+	return axios
+		.put(`http://localhost:3002/persons/${person.id}`, person)
+		.then((response) => {
+			return response.data
+		})
+}
 
-export { getContacts, addContact, deleteContact }
+export { getContacts, addContact, deleteContact, refreshData }

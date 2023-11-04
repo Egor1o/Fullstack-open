@@ -4,16 +4,16 @@ import * as contactService from './services/contactService'
 const Person = ({ name, number, handleDelete }) => {
 	return (
 		<>
-			<form
-				onSubmit={() => {
+			<p>
+				{name} {number}
+			</p>
+			<button
+				onClick={() => {
 					handleDelete(name)
 				}}
 			>
-				<p>
-					{name} {number}
-				</p>
-				<button type='submit'>delete</button>
-			</form>
+				delete
+			</button>
 		</>
 	)
 }
@@ -91,20 +91,40 @@ const App = () => {
 	//do not forget to turn server on!
 	useEffect(() => {
 		contactService.getContacts().then((contacts) => setPersons(contacts))
-	}, [persons])
+	}, [])
 
 	const handleAddClick = (event) => {
 		event.preventDefault()
-		if (persons.map((elem) => elem.name).includes(newInfo.name)) {
-			alert(`${newInfo.name} is already added to phonebook`)
+
+		const inListIndex = persons
+			.map((elem) => elem.name)
+			.indexOf(newInfo.name)
+
+		if (inListIndex !== -1) {
+			if (
+				confirm(
+					`${newInfo.name} is already in the list, do you want to update it ?`
+				)
+			) {
+				const updatedPerson = {
+					...persons[inListIndex],
+					number: newInfo.number,
+				}
+
+				contactService.refreshData(updatedPerson).then((data) => {
+					const updatedPersons = persons.map((person) =>
+						data.id !== person.id ? person : data
+					)
+					setPersons(updatedPersons)
+				})
+			}
 		} else {
-			const copy = [...persons]
 			const newContact = {
 				name: newInfo.name,
 				number: newInfo.number,
 			}
-			contactService.addContact(newContact).then(() => {
-				setPersons(copy.concat(newContact))
+			contactService.addContact(newContact).then((data) => {
+				setPersons([...persons].concat(data))
 				setNewInfo({ name: '', number: '' })
 			})
 		}
@@ -123,16 +143,13 @@ const App = () => {
 	}
 
 	const handleDelete = (name) => {
-		console.log('slndfln dosnnbibo ')
-		console.log(name)
-		if (confirm(`Delete ${name}`)) {
+		if (confirm(`Delete ${name} ?`)) {
 			const copy = persons.filter((person) => {
-				person.name !== name
+				return person.name !== name
 			})
 			const toBeDeleted = persons.filter(
 				(person) => person.name === name
 			)[0]
-			console.log(toBeDeleted)
 			contactService
 				.deleteContact(toBeDeleted)
 				.then((response) => response)
