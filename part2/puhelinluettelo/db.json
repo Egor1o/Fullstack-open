@@ -1,24 +1,19 @@
 {
   "persons": [
     {
-      "name": "Egor Kovalenko",
-      "number": "0465721739",
+      "name": "Anton Voilahti",
+      "number": "",
       "id": 1
     },
     {
-      "name": "Denis Kuznetsov",
-      "number": "1",
+      "name": "Egor",
+      "number": "",
       "id": 2
     },
     {
-      "name": "Rafshan Jembele",
-      "number": "2308 293057",
+      "name": "Anton",
+      "number": "",
       "id": 3
-    },
-    {
-      "name": "Uncle Suren",
-      "number": "23+4023",
-      "id": 4
     }
   ]
 }

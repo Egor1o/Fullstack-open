@@ -15,11 +15,10 @@ const addContact = async (newContact) => {
 }
 
 const deleteContact = async (contact) => {
-	return axios
-		.delete(`http://localhost:3002/persons/${contact.id}`)
-		.then((response) => {
-			response.data
-		})
+	const del = axios.delete(`http://localhost:3002/persons/${contact.id}`)
+	return del.then((response) => {
+		return response
+	})
 }
 
 const refreshData = async (person) => {
