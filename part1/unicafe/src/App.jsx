@@ -58,8 +58,6 @@ const Statistics = ({ stats }) => {
 }
 
 const History = (props) => {
-	console.log(props)
-	console.log(summary(props.stats))
 	if (summary(props.stats) == 0) {
 		return (
 			<div>
@@ -73,7 +71,6 @@ const History = (props) => {
 }
 
 const App = () => {
-	// tallenna napit omaan tilaansa
 	const [good, setGood] = useState(0)
 	const [neutral, setNeutral] = useState(0)
 	const [bad, setBad] = useState(0)

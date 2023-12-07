@@ -4,14 +4,16 @@ const Button = ({ handleClick, text }) => {
 	return <button onClick={handleClick}>{text}</button>
 }
 
-const Anecdote = ({ anecdote, text }) => {
+const Anecdote = ({ anecdote, text, points }) => {
 	return (
-		<>	<h1>{text}</h1>
+		<>
+			{' '}
+			<h1>{text}</h1>
 			<div>{anecdote}</div>
+			<div>{`has ${points} votes`}</div>
 		</>
 	)
 }
-
 
 const App = () => {
 	const anecdotes = [
@@ -34,29 +36,30 @@ const App = () => {
 	const giveVote = () => {
 		const pointsCopy = [...points]
 		pointsCopy[selected] += 1
-		console.log(pointsCopy)
 		setPoints(pointsCopy)
 		// next line is added so that user can't vote multiple time the same anecdote right away
 		chooseAnecdote()
 	}
 
 	const getBest = () => {
-		// more efficient compare techniques could have been used 
 		let index = 0
 		let count = 0
-		points.forEach(point => {
+		points.forEach((point) => {
 			if (points[index] < point) {
 				index = count
 			}
-			count+=1
+			count += 1
 		})
 		return anecdotes[index]
 	}
 
-
 	return (
 		<div>
-			<Anecdote anecdote={anecdotes[selected]} text='Anecdote of the day' />
+			<Anecdote
+				anecdote={anecdotes[selected]}
+				text='Anecdote of the day'
+				points={points[selected]}
+			/>
 			<Button handleClick={giveVote} text='vote' />
 			<Button handleClick={chooseAnecdote} text='next anecdote' />
 			<Anecdote anecdote={getBest()} text='Anecdote with most votes' />

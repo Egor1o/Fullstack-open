@@ -18,7 +18,7 @@ const Part = (props) => {
 
 const Content = (props) => {
 	return props.course.parts.map((part) => {
-		return <Part part={part} />
+		return <Part key={part.name} part={part} />
 	})
 }
 
@@ -35,7 +35,6 @@ const Total = (props) => {
 }
 
 const Course = (props) => {
-	console.log(props)
 	return (
 		<>
 			<Header course={props.course} />
