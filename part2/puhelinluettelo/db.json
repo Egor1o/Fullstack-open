@@ -1,19 +1,14 @@
 {
   "persons": [
     {
-      "name": "Anton Voilahti",
-      "number": "",
-      "id": 1
+      "name": "Manga Bonga",
+      "number": "2",
+      "id": 8
     },
     {
-      "name": "Egor",
-      "number": "",
-      "id": 2
-    },
-    {
-      "name": "Anton",
-      "number": "",
-      "id": 3
+      "name": "manger banger2",
+      "number": "14",
+      "id": 11
     }
   ]
 }

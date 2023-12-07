@@ -1,96 +1,10 @@
 import { useEffect, useState } from 'react'
+import Filter from './components/Filter'
+import Notification from './components/Notification'
+import NumbersDisplay from './components/NumberDisplay'
+import PersonForm from './components/PersonForm'
 import './index.css'
 import * as contactService from './services/contactService'
-
-const Person = ({ name, number, handleDelete }) => {
-	return (
-		<>
-			<p>
-				{name} {number}
-			</p>
-			<button
-				onClick={() => {
-					handleDelete(name)
-				}}
-			>
-				delete
-			</button>
-		</>
-	)
-}
-
-const Info = ({ persons, handleDelete }) => {
-	return persons.map((human) => {
-		return (
-			<Person
-				key={human.name}
-				name={human.name}
-				number={human.number}
-				handleDelete={handleDelete}
-			/>
-		)
-	})
-}
-
-const NumbersDisplay = ({ persons, handleDelete }) => {
-	return (
-		<>
-			<h2>Numbers</h2>
-			<div>
-				<Info persons={persons} handleDelete={handleDelete} />
-			</div>
-		</>
-	)
-}
-
-const Filter = ({ search, handleSearchChange }) => {
-	return (
-		<>
-			<h2>Phonebook</h2>
-			<div>
-				filter shown with
-				<input value={search} onChange={handleSearchChange} />
-			</div>
-		</>
-	)
-}
-
-const PersonForm = ({
-	handleAddClick,
-	handleNameChange,
-	handleNumberChange,
-	newInfo,
-}) => {
-	return (
-		<>
-			<h2>Add a new</h2>
-			<form onSubmit={handleAddClick}>
-				<div>
-					name:
-					<input value={newInfo.name} onChange={handleNameChange} />
-				</div>
-				<div>
-					number:
-					<input
-						value={newInfo.number}
-						onChange={handleNumberChange}
-					/>
-				</div>
-				<div>
-					<button type='submit'>add</button>
-				</div>
-			</form>
-		</>
-	)
-}
-
-const Notification = ({ message }) => {
-	if (message === null) {
-		return null
-	}
-
-	return <div className='error'>{message}</div>
-}
 
 const App = () => {
 	const [persons, setPersons] = useState([])
@@ -103,11 +17,23 @@ const App = () => {
 		contactService.getContacts().then((contacts) => setPersons(contacts))
 	}, [])
 
-	const makeNotification = (message) => {
-		setNotification(message)
+	const makeNotification = (message, color) => {
+		setNotification({ color: color, message: message })
 		setTimeout(() => {
 			setNotification(null)
 		}, 5000)
+	}
+
+	const handleDeleteUpdateError = (contact) => {
+		setPersons(
+			persons.filter((person) => {
+				return person.id !== contact.id
+			})
+		)
+		makeNotification(
+			`Information of ${contact.name} has been already removed from server`,
+			'red'
+		)
 	}
 
 	const handleAddClick = (event) => {
@@ -132,15 +58,21 @@ const App = () => {
 					number: newInfo.number,
 				}
 
-				contactService.refreshData(updatedPerson).then((data) => {
-					const updatedPersons = persons.map((person) =>
-						data.id !== person.id ? person : data
-					)
-					setPersons(updatedPersons)
-					makeNotification(
-						`Updated ${updatedPerson.name} successfully`
-					)
-				})
+				contactService
+					.refreshData(updatedPerson)
+					.then((data) => {
+						const updatedPersons = persons.map((person) =>
+							data.id !== person.id ? person : data
+						)
+						setPersons(updatedPersons)
+						makeNotification(
+							`Updated ${updatedPerson.name} successfully`,
+							'green'
+						)
+					})
+					.catch(() => {
+						handleDeleteUpdateError(updatedPerson)
+					})
 			}
 		} else {
 			const newContact = {
@@ -150,7 +82,7 @@ const App = () => {
 			contactService.addContact(newContact).then((data) => {
 				setPersons([...persons].concat(data))
 				setNewInfo({ name: '', number: '' })
-				makeNotification(`Added ${newContact.name}`)
+				makeNotification(`Added ${newContact.name}`, 'green')
 			})
 		}
 	}
@@ -179,17 +111,10 @@ const App = () => {
 				.deleteContact(toBeDeleted)
 				.then(() => {
 					setPersons(copy)
-					makeNotification(`Deleted ${toBeDeleted.name}`)
+					makeNotification(`Deleted ${toBeDeleted.name}`, 'red')
 				})
 				.catch(() => {
-					setPersons(
-						persons.filter((person) => {
-							return person.id !== toBeDeleted.id
-						})
-					)
-					setNotification(
-						`Information of ${toBeDeleted.name} has been already removed from server`
-					)
+					handleDeleteUpdateError(updatedPerson)
 				})
 		}
 	}

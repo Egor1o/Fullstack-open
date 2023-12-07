@@ -16,12 +16,12 @@ const getCountryInfo = async (name) => {
 		})
 }
 
-const getWeather = async (json) => {
+const getWeather = async (json, key) => {
 	const country = json
 	const lat = country.capitalInfo.latlng[0]
 	const lon = country.capitalInfo.latlng[1]
 
-	const base = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=7a317cdc107e5a474f06f9d2e3c674d4`
+	const base = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${key}`
 	console.log(base)
 	return axios.get(base).then((response) => {
 		return response
