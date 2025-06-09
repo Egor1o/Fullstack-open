@@ -10,6 +10,31 @@ interface Result {
     average: number
 }
 
+interface ExerciseParams {
+    weekHours: number[]
+    target: number
+}
+
+const parseArgs = (args: string[]): ExerciseParams => {
+    if (args.length < 4) throw new Error('Not enough arguments');
+    const weekHours: number[] = []
+
+    const allArgs = args.slice(2)
+    allArgs.slice().forEach((arg) => {
+        if(isNaN(Number(arg))){
+            throw new Error('Provided values were not numbers!');
+        }
+        weekHours.push(Number(arg))
+    })
+
+    const target: number = weekHours.pop()
+
+    return <ExerciseParams>{
+        weekHours,
+        target
+    }
+}
+
 const calculateExercises = (weekHours: number[], target: number): Result => {
     const periodLength = weekHours.length
     const trainingDays = weekHours.filter(number => {return number > 0.0}).length
@@ -32,4 +57,13 @@ const calculateExercises = (weekHours: number[], target: number): Result => {
     }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const {weekHours, target} = parseArgs(process.argv)
+    console.log(calculateExercises(weekHours, target))
+} catch (error: unknown) {
+    let errorMessage = 'Something bad happened.'
+    if (error instanceof Error) {
+        errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
+}
