@@ -27,7 +27,8 @@ const parseArgs = (args: string[]): ExerciseParams => {
         weekHours.push(Number(arg))
     })
 
-    const target: number = weekHours.shift()
+    // at this point we can be sure, that the first element exists, and it is of type number.
+    const target: number = weekHours.shift()!
 
     return <ExerciseParams>{
         weekHours,
