@@ -20,14 +20,14 @@ const parseArgs = (args: string[]): ExerciseParams => {
     const weekHours: number[] = []
 
     const allArgs = args.slice(2)
-    allArgs.slice().forEach((arg) => {
+    allArgs.forEach((arg) => {
         if(isNaN(Number(arg))){
             throw new Error('Provided values were not numbers!');
         }
         weekHours.push(Number(arg))
     })
 
-    const target: number = weekHours.pop()
+    const target: number = weekHours.shift()
 
     return <ExerciseParams>{
         weekHours,
