@@ -1,4 +1,4 @@
-import express, {Request} from 'express'
+import express, {Request} from 'express';
 import calculateBmi from "./bmiCalculator";
 const app = express();
 
@@ -7,20 +7,20 @@ interface QueryParams {
     height?: string
 }
 
-app.get('/bmi', (req: Request<{}, {}, {}, QueryParams>, res) => {
-    const params = req.query
+app.get('/bmi', (req: Request<object, object, object, QueryParams>, res) => {
+    const params = req.query;
     if(!params || !params.weight || !params.height || isNaN(Number(params.weight)) || isNaN(Number(params.weight))){
-        res.status(400).json({error: "malformatted parameters"})
+        res.status(400).json({error: "malformatted parameters"});
     }
     try{
-        const bmiValue = calculateBmi(Number(params.height), Number(params.weight))
+        const bmiValue = calculateBmi(Number(params.height), Number(params.weight));
         res.status(200).json({
             weight: params.weight,
             height: params.height,
             bmi: bmiValue
-        })
-    } catch (_) {
-        res.status(400).json({error: "malformatted parameters"})
+        });
+    } catch (_err) {
+        res.status(400).json({error: "malformatted parameters"});
     }
 });
 
