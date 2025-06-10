@@ -1,3 +1,5 @@
+import {parseArray} from "./utils";
+
 type RatingDescription = "Try harder next time" | "not too bad but could be better" | "Good job! Keep going";
 
 interface Result {
@@ -17,23 +19,9 @@ interface ExerciseParams {
 
 const parseArgs = (args: string[]): ExerciseParams => {
     if (args.length < 4) throw new Error('Not enough arguments');
-    const weekHours: number[] = [];
-
-    const allArgs = args.slice(2);
-    allArgs.forEach((arg) => {
-        if(isNaN(Number(arg))){
-            throw new Error('Provided values were not numbers!');
-        }
-        weekHours.push(Number(arg));
-    });
-
-    // at this point we can be sure, that the first element exists, and it is of type number.
-    const target: number = weekHours.shift()!;
-
-    return <ExerciseParams>{
-        weekHours,
-        target
-    };
+    const argsArray: string[] = args.slice(2);
+    const target = argsArray.shift()!;
+    return parseArray(argsArray,target);
 };
 
 const calculateExercises = (weekHours: number[], target: number): Result => {
@@ -57,14 +45,16 @@ const calculateExercises = (weekHours: number[], target: number): Result => {
         average
     };
 };
-
-try {
-    const {weekHours, target} = parseArgs(process.argv);
-    console.log(calculateExercises(weekHours, target));
-} catch (error: unknown) {
-    let errorMessage = 'Something bad happened.';
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
+if(require.main === module) {
+    try {
+        const {weekHours, target} = parseArgs(process.argv);
+        console.log(calculateExercises(weekHours, target));
+    } catch (error: unknown) {
+        let errorMessage = 'Something bad happened.';
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        console.log(errorMessage);
     }
-    console.log(errorMessage);
 }
+export default calculateExercises;
