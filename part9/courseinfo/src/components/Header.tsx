@@ -1,15 +1,10 @@
-import type {JSX} from "react";
+import type { JSX } from 'react';
 
 interface Props {
-    name: string;
+  name: string;
 }
-const Header = ({name} : Props): JSX.Element => {
-    return (
-        <h1>
-            {name}
-        </h1>
-    )
-}
+const Header = ({ name }: Props): JSX.Element => {
+  return <h1>{name}</h1>;
+};
 
-
-export default Header
+export default Header;
