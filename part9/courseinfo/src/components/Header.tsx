@@ -1,8 +1,9 @@
+import type {JSX} from "react";
+
 interface Props {
     name: string;
 }
-
-const Header = ({name} : Props) => {
+const Header = ({name} : Props): JSX.Element => {
     return (
         <h1>
             {name}
