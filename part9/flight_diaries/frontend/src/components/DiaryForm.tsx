@@ -26,7 +26,7 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
     "sunny" as Weather,
   );
   const [visibility, setVisibility] = useState<NewDiaryEntry["visibility"]>(
-    "ok" as Visibility,
+    "great" as Visibility,
   );
   const [date, setDate] = useState<string>(new Date().toDateString());
   const [comment, setComment] = useState<string>("");
@@ -155,25 +155,24 @@ const SelectInput = <T extends EnumLike>({
   stateChange,
   title,
 }: SelectInputProps<T>): JSX.Element => {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    stateChange(e.target.value as T[keyof T]);
-  };
   return (
-    <div style={fieldStyle}>
-      <p>{title}</p>
-      <select
-        value={value}
-        onChange={handleChange}
-        style={{
-          height: "50%",
-        }}
-      >
-        {getEnumKeys(options).map((key) => (
-          <option key={key} value={options[key]}>
-            {key}
-          </option>
-        ))}
-      </select>
+    <div style={{ ...fieldStyle, gap: "0.3rem" }}>
+      <p>{title}: </p>
+      {getEnumKeys(options).map((key, index) => (
+        <div key={key + index}>
+          <label>{key}</label>
+          <input
+            type="radio"
+            value={options[key]}
+            name={"enum" + title}
+            defaultChecked={value === options[key]}
+            onChange={(event) => stateChange(event.target.value as T[keyof T])}
+            style={{
+              height: "50%",
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 };
