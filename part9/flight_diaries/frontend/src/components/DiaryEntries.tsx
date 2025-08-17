@@ -11,7 +11,7 @@ export const DiaryEntries = (props: Props): JSX.Element => {
       {props.diaryEntries.map((diaryEntry, index) => {
         return (
           <div key={`diary-entry-${index}`}>
-            <h3>{diaryEntry.date}</h3>
+            <h3>{new Date(diaryEntry.date).toDateString()}</h3>
             <p>visibility: {diaryEntry.visibility}</p>
             <p>weather: {diaryEntry.weather}</p>
           </div>

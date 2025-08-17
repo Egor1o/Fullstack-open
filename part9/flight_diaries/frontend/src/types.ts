@@ -19,6 +19,7 @@ const DiaryEntry = z.object({
   date: z.date(),
   weather: z.enum(Weather),
   visibility: z.enum(Visibility),
+  comment: z.string(),
 });
 export type DiaryEntry = z.infer<typeof DiaryEntry>;
 

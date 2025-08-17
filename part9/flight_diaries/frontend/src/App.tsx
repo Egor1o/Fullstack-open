@@ -14,7 +14,7 @@ function App() {
   return (
     <>
       <DiaryEntries diaryEntries={diaryEntries} />
-      <DiaryForm />
+      <DiaryForm setDiaryEntries={setDiaryEntries} />
     </>
   );
 }
