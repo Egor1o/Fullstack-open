@@ -1,3 +1,6 @@
 [submodule "part9/patientor/patientor"]
 	path = part9/patientor/patientor
 	url = git@github.com:Egor1o/patientor.git
+[submodule "part9/flight_diaries/flight-diary-backend"]
+	path = part9/flight_diaries/flight-diary-backend
+	url = git@github.com:Egor1o/flight-diary-backend.git
