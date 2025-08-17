@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { DiaryEntry } from "./types.ts";
-import { getDiaries } from "./diaryService.ts";
+import { getDiaries } from "./services/diaryService.ts";
 import { DiaryEntries } from "./components/DiaryEntries.tsx";
 import { DiaryForm } from "./components/DiaryForm.tsx";
 
@@ -13,8 +13,8 @@ function App() {
   }, []);
   return (
     <>
-      <DiaryEntries diaryEntries={diaryEntries} />
       <DiaryForm setDiaryEntries={setDiaryEntries} />
+      <DiaryEntries diaryEntries={diaryEntries} />
     </>
   );
 }

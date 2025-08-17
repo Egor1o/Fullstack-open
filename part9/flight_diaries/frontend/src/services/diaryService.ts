@@ -1,4 +1,4 @@
-import type { DiaryEntry, NewDiaryEntry } from "./types.ts";
+import type { DiaryEntry, NewDiaryEntry } from "../types.ts";
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/diaries";

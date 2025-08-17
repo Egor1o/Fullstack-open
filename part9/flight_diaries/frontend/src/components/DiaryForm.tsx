@@ -6,18 +6,26 @@ import {
   Weather,
 } from "../types.ts";
 import * as React from "react";
-import { createDiary } from "../diaryService.ts";
+import { createDiary } from "../services/diaryService.ts";
 import axios from "axios";
 
 type DiaryFormProps = {
   setDiaryEntries: Dispatch<SetStateAction<DiaryEntry[]>>;
 };
 
-const fieldStyle: React.CSSProperties = {
+const formFieldStyle: React.CSSProperties = {
   display: "flex",
   flexDirection: "row",
   gap: "1rem",
   alignItems: "center",
+};
+
+const formStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
+  width: "30%",
+  gap: "0.5rem",
+  marginTop: "1rem",
 };
 
 export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
@@ -28,7 +36,7 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
   const [visibility, setVisibility] = useState<NewDiaryEntry["visibility"]>(
     "great" as Visibility,
   );
-  const [date, setDate] = useState<string>(new Date().toDateString());
+  const [date, setDate] = useState<string>("");
   const [comment, setComment] = useState<string>("");
 
   const createNewEntry = (): NewDiaryEntry => {
@@ -49,12 +57,13 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
     const newEntry = createNewEntry();
     const parsedEntry = parseNewEntry(newEntry);
 
-    //if you want to test with incorrect data, comment lines 53-57
+    //if you want to test with incorrect data - comment next check.
     if (!parsedEntry.success) {
       setErrors(parsedEntry.error.issues.map((er) => er.message));
       return;
     }
     setErrors([]);
+    //also, if you use intelij, you can try out http-tests test request.
 
     createDiary(newEntry)
       .then((data) => {
@@ -79,18 +88,9 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
   return (
     <div>
       <h2>Add new diary entry</h2>
-      <form
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          width: "30%",
-          gap: "0.5rem",
-          marginTop: "1rem",
-        }}
-        onSubmit={handleSubmit}
-      >
+      <form style={formStyle} onSubmit={handleSubmit}>
         {errors.length > 0 ? <InputErrors errors={errors} /> : null}
-        <TextInput value={date} setValue={setDate} title={"date"} />
+        <RegularInput value={date} setValue={setDate} title={"date"} />
         <SelectInput
           options={Weather}
           value={weather}
@@ -103,8 +103,15 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
           stateChange={setVisibility}
           title={"visibility"}
         />
-        <TextInput value={comment} setValue={setComment} title={"comment"} />
-        <button type="submit">add</button>
+        <RegularInput value={comment} setValue={setComment} title={"comment"} />
+        <button
+          type="submit"
+          style={{
+            width: "30%",
+          }}
+        >
+          add
+        </button>
       </form>
     </div>
   );
@@ -120,18 +127,22 @@ const InputErrors = ({ errors }: { errors: string[] }): JSX.Element => {
   );
 };
 
-type TextInputProps = {
+type BaseInputProps = {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   title: string;
 };
 
-const TextInput = ({ value, setValue, title }: TextInputProps) => {
+const RegularInput = ({
+  value,
+  setValue,
+  title,
+}: BaseInputProps): JSX.Element => {
   return (
-    <div style={fieldStyle}>
+    <div style={formFieldStyle}>
       <p>{title}</p>
       <input
-        type="text"
+        type={title === "comment" ? "text" : "date"}
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
@@ -156,7 +167,7 @@ const SelectInput = <T extends EnumLike>({
   title,
 }: SelectInputProps<T>): JSX.Element => {
   return (
-    <div style={{ ...fieldStyle, gap: "0.3rem" }}>
+    <div style={{ ...formFieldStyle, gap: "0.3rem" }}>
       <p>{title}: </p>
       {getEnumKeys(options).map((key, index) => (
         <div key={key + index}>
