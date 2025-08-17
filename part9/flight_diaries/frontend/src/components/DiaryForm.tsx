@@ -7,6 +7,7 @@ import {
 } from "../types.ts";
 import * as React from "react";
 import { createDiary } from "../diaryService.ts";
+import axios from "axios";
 
 type DiaryFormProps = {
   setDiaryEntries: Dispatch<SetStateAction<DiaryEntry[]>>;
@@ -48,19 +49,30 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
     const newEntry = createNewEntry();
     const parsedEntry = parseNewEntry(newEntry);
 
+    //if you want to test with incorrect data, comment lines 53-57
     if (!parsedEntry.success) {
       setErrors(parsedEntry.error.issues.map((er) => er.message));
       return;
     }
-
     setErrors([]);
 
     createDiary(newEntry)
       .then((data) => {
+        setErrors([]);
         setDiaryEntries((value) => [...value, data]);
       })
       .catch((error) => {
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+          setErrors(error.response ? [error.response.data] : []);
+          return;
+        }
+
+        if (error instanceof Error) {
+          setErrors([error.message]);
+          return;
+        }
+
+        setErrors(["An unknown error occurred"]);
       });
   };
 
