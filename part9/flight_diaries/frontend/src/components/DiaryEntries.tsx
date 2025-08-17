@@ -14,6 +14,9 @@ export const DiaryEntries = (props: Props): JSX.Element => {
             <h3>{new Date(diaryEntry.date).toDateString()}</h3>
             <p>visibility: {diaryEntry.visibility}</p>
             <p>weather: {diaryEntry.weather}</p>
+            {diaryEntry.comment && diaryEntry.comment !== "" ? (
+              <p>comment: {diaryEntry.comment}</p>
+            ) : null}
           </div>
         );
       })}
