@@ -68,6 +68,10 @@ export const DiaryForm = ({ setDiaryEntries }: DiaryFormProps): JSX.Element => {
     createDiary(newEntry)
       .then((data) => {
         setErrors([]);
+        setDate("");
+        setComment("");
+        setVisibility("great" as Visibility);
+        setWeather("sunny" as Weather);
         setDiaryEntries((value) => [...value, data]);
       })
       .catch((error) => {
@@ -127,7 +131,7 @@ const InputErrors = ({ errors }: { errors: string[] }): JSX.Element => {
   );
 };
 
-type BaseInputProps = {
+type RegularInputProps = {
   value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   title: string;
@@ -137,12 +141,12 @@ const RegularInput = ({
   value,
   setValue,
   title,
-}: BaseInputProps): JSX.Element => {
+}: RegularInputProps): JSX.Element => {
   return (
     <div style={formFieldStyle}>
       <p>{title}</p>
       <input
-        type={title === "comment" ? "text" : "date"}
+        type={title === "date" ? "date" : "text"}
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
@@ -176,7 +180,7 @@ const SelectInput = <T extends EnumLike>({
             type="radio"
             value={options[key]}
             name={"enum" + title}
-            defaultChecked={value === options[key]}
+            checked={value === options[key]}
             onChange={(event) => stateChange(event.target.value as T[keyof T])}
             style={{
               height: "50%",
