@@ -1,0 +1,10 @@
+### Create a new diary entry with an invalid date format
+POST http://localhost:3000/api/diaries
+Content-Type: application/json
+
+{
+  "visibility": "Awful",
+  "date": "No date for you hehehehe",
+  "comment": "This is a test diary entry with an invalid date format.",
+  "weather": "Kinda sunny"
+}
