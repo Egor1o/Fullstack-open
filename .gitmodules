@@ -1,0 +1,3 @@
+[submodule "part9/patientor/patientor"]
+	path = part9/patientor/patientor
+	url = git@github.com:Egor1o/patientor.git
