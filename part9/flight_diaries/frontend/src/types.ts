@@ -1,3 +1,4 @@
+import * as z from "zod";
 export enum Weather {
   Sunny = "sunny",
   Rainy = "rainy",
@@ -13,9 +14,13 @@ export enum Visibility {
   Poor = "poor",
 }
 
-export interface DiaryEntry {
-  id: number;
-  date: string;
-  weather: Weather;
-  visibility: Visibility;
-}
+const DiaryEntry = z.object({
+  id: z.string(),
+  date: z.date(),
+  weather: z.enum(Weather),
+  visibility: z.enum(Visibility),
+});
+export type DiaryEntry = z.infer<typeof DiaryEntry>;
+
+export const NewDiaryEntry = DiaryEntry.omit({ id: true });
+export type NewDiaryEntry = z.infer<typeof NewDiaryEntry>;
