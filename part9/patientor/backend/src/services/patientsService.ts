@@ -1,53 +1,56 @@
 import data from "../../data/patients";
-import {NewPatientEntry, NonSensitivePatient, Patient} from "../types";
-import {v4 as uuidv4} from 'uuid';
+import { NewPatientEntry, NonSensitivePatient, Patient } from "../types";
+import { v4 as uuidv4 } from "uuid";
 
-const getEntries = (): Patient[] => {
-    return data;
+const getPatientEntries = (): Patient[] => {
+  return data;
 };
 
-const getAllPatients = (): NonSensitivePatient[] => {
-    const patients = getEntries();
-    //removing ssn from patients
-    return patients.map((patient: Patient) => {
-        return {
-            name: patient.name,
-            occupation: patient.occupation,
-            dateOfBirth: patient.dateOfBirth,
-            id: patient.id,
-            gender: patient.gender,
-        };
-    });
+const makeNonSensitivePatient = (patient: Patient): NonSensitivePatient => {
+  return {
+    name: patient.name,
+    occupation: patient.occupation,
+    dateOfBirth: patient.dateOfBirth,
+    id: patient.id,
+    gender: patient.gender,
+  };
 };
 
-const getPatient = (id: string): NonSensitivePatient => {
-    const matchingPatients = getEntries().filter((patient) => {
-        return patient.id === id;
-    });
+const getAllNonSensitivePatients = (): NonSensitivePatient[] => {
+  const patients = getPatientEntries();
+  return patients.map((patient: Patient) => {
+    return makeNonSensitivePatient(patient);
+  });
+};
 
-    //patient without ssn
-    if( matchingPatients.length > 0 ){
-        const patient = matchingPatients[0];
-        return {
-            name: patient.name,
-            occupation: patient.occupation,
-            dateOfBirth: patient.dateOfBirth,
-            id: patient.id,
-            gender: patient.gender,
-        };
-    }
+const findMatchingPatient = (id: string): Patient | null => {
+  const matchingPatients = getPatientEntries().filter((patient) => {
+    return patient.id === id;
+  });
+  if (matchingPatients.length === 0) return null;
 
-    throw new Error("Patient is not found");
+  return matchingPatients[0];
+};
+
+const getNonSensitivePatient = (id: string): NonSensitivePatient | null => {
+  const matchingPatient = findMatchingPatient(id);
+  if (matchingPatient === null) return null;
+  return makeNonSensitivePatient(matchingPatient);
+};
+
+const getPatient = (id: string): Patient | null => {
+  return findMatchingPatient(id);
 };
 
 const addNewPatient = (patient: NewPatientEntry): Patient => {
-    const newPatient: Patient = {...patient, id: uuidv4()};
-    data.push(newPatient);
-    return newPatient;
+  const newPatient: Patient = { ...patient, id: uuidv4() };
+  data.push(newPatient);
+  return newPatient;
 };
 
 export default {
-    getAllPatients,
-    addNewPatient,
-    getPatient
+  getAllNonSensitivePatients,
+  addNewPatient,
+  getNonSensitivePatient,
+  getPatient,
 };
