@@ -24,6 +24,14 @@ const phoneBook = [
   },
 ];
 
+app.get("/info", (req, res) => {
+  const entryCount = phoneBook.length;
+  const currentDate = new Date();
+  res.send(
+    `<p>Phonebook has info for ${entryCount} people</p><p>${currentDate}</p>`,
+  );
+});
+
 app.get("/api/persons", (req, res) => {
   res.json(phoneBook);
 });
