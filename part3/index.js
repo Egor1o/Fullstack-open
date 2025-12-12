@@ -24,6 +24,8 @@ const phoneBook = [
   },
 ];
 
+app.use(express.json());
+
 app.get("/info", (req, res) => {
   const entryCount = phoneBook.length;
   const currentDate = new Date();
@@ -55,6 +57,25 @@ app.delete("/api/persons/:id", (req, res) => {
   } else {
     res.status(404).end();
   }
+});
+
+app.post("/api/persons", (req, res) => {
+  const newId = Math.floor(Math.random() * 10000);
+  const body = req.body;
+
+  if (!body.name || !body.number) {
+    return res.status(400).json({ error: "name or number is missing" });
+  }
+
+  const newEntry = {
+    id: newId.toString(),
+    name: body.name,
+    number: body.number,
+  };
+
+  phoneBook.push(newEntry);
+
+  return res.json(newEntry);
 });
 
 const PORT = 3001;
