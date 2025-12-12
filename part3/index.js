@@ -46,6 +46,17 @@ app.get("/api/persons", (req, res) => {
   res.json(phoneBook);
 });
 
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const index = phoneBook.findIndex((p) => p.id === id);
+  if (index !== -1) {
+    phoneBook.splice(index, 1);
+    res.status(200).end();
+  } else {
+    res.status(404).end();
+  }
+});
+
 const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
