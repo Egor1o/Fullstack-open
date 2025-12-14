@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 
 const phoneBook = [
@@ -24,6 +25,7 @@ const phoneBook = [
     number: "39-23-6423122",
   },
 ];
+
 morgan.token("body", (req) => {
   return JSON.stringify(req.body);
 });
@@ -32,6 +34,12 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body"),
 );
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  }),
+);
 
 app.get("/info", (req, res) => {
   const entryCount = phoneBook.length;
@@ -95,7 +103,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
