@@ -76,7 +76,6 @@ app.delete("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  const newId = Math.floor(Math.random() * 10000);
   const body = req.body;
 
   if (!body.name || !body.number) {
@@ -87,15 +86,14 @@ app.post("/api/persons", (req, res) => {
     return res.status(400).json({ error: "name must be unique" });
   }
 
-  const newEntry = {
-    id: newId.toString(),
+  const phoneBookInstance = new PhoneBookInstance({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  phoneBook.push(newEntry);
-
-  return res.json(newEntry);
+  phoneBookInstance.save().then((result) => {
+    return res.json(result);
+  });
 });
 
 const unknownEndpoint = (request, response) => {
