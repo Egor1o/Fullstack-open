@@ -9,6 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch index.js",
+    "build:ui": "cd .. && cd part2/puhelinluettelo && npm run build &&  cp -r dist ../../part3",
+    "dev:start": "npm run build:ui && node index.js",
     "start": "node index.js"
   },
   "dependencies": {

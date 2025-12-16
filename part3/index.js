@@ -26,6 +26,8 @@ const phoneBook = [
   },
 ];
 
+app.use(express.static("dist"));
+
 morgan.token("body", (req) => {
   return JSON.stringify(req.body);
 });
@@ -105,5 +107,5 @@ app.use(unknownEndpoint);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on port : ${PORT}`);
 });
