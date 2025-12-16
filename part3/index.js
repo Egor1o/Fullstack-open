@@ -66,15 +66,13 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
-  const index = phoneBook.findIndex((p) => p.id === id);
-  if (index !== -1) {
-    phoneBook.splice(index, 1);
-    res.status(200).end();
-  } else {
-    res.status(404).end();
-  }
+  PhoneBookInstance.findByIdAndDelete(req.params.id)
+    .then((_result) => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (req, res) => {
@@ -103,6 +101,18 @@ const unknownEndpoint = (request, response) => {
 };
 
 app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
