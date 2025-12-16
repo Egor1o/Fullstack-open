@@ -1,5 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
+const PhoneBookInstance = require("./models/phonebook");
 const app = express();
 
 const phoneBook = [
@@ -37,11 +39,13 @@ app.use(
 app.use(express.json());
 
 app.get("/info", (req, res) => {
-  const entryCount = phoneBook.length;
-  const currentDate = new Date();
-  res.send(
-    `<p>Phonebook has info for ${entryCount} people</p><p>${currentDate}</p>`,
-  );
+  PhoneBookInstance.find({}).then((result) => {
+    const entryCount = result.length;
+    const currentDate = new Date();
+    res.send(
+      `<p>Phonebook has info for ${entryCount} people</p><p>${currentDate}</p>`,
+    );
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -55,7 +59,9 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  res.json(phoneBook);
+  PhoneBookInstance.find({}).then((result) => {
+    res.json(result);
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
