@@ -2,33 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const PhoneBookInstance = require("./models/phonebook");
+
 const app = express();
-
-const phoneBook = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 app.use(express.static("dist"));
-
 morgan.token("body", (req) => {
   return JSON.stringify(req.body);
 });
@@ -48,16 +24,18 @@ app.get("/info", (req, res) => {
   });
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
 
-  PhoneBookInstance.findById(id).then((result) => {
-    if (result) {
-      res.json(result);
-    } else {
-      res.status(404).end();
-    }
-  });
+  PhoneBookInstance.findById(id)
+    .then((result) => {
+      if (result) {
+        res.json(result);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/api/persons", (req, res) => {
@@ -98,10 +76,6 @@ app.post("/api/persons", (req, res) => {
 
   if (!body.name || !body.number) {
     return res.status(400).json({ error: "name or number is missing" });
-  }
-
-  if (phoneBook.some((entry) => entry.name === body.name)) {
-    return res.status(400).json({ error: "name must be unique" });
   }
 
   const phoneBookInstance = new PhoneBookInstance({
