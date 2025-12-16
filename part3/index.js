@@ -75,6 +75,24 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
+app.put("/api/persons/:id", (req, res, next) => {
+  const { name, number } = req.body;
+  PhoneBookInstance.findById(req.params.id)
+    .then((phoneBook) => {
+      if (!phoneBook) {
+        return res.status(404).end();
+      }
+
+      phoneBook.name = name;
+      phoneBook.number = number;
+
+      return phoneBook.save().then((updatedNote) => {
+        res.json(updatedNote);
+      });
+    })
+    .catch((error) => next(error));
+});
+
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
