@@ -36,6 +36,7 @@ if (process.argv.length === 5) {
 }
 
 if (process.argv.length === 3) {
+  console.log("phonebook:");
   PhoneBookInstance.find({}).then((result) => {
     result.forEach((entry) => {
       console.log(`${entry.name} ${entry.number}`);
