@@ -71,7 +71,7 @@ app.put("/api/persons/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   if (!body.name || !body.number) {
@@ -83,9 +83,12 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   });
 
-  phoneBookInstance.save().then((result) => {
-    return res.json(result);
-  });
+  phoneBookInstance
+    .save()
+    .then((result) => {
+      return res.json(result);
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
