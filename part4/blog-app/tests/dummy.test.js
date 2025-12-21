@@ -74,3 +74,17 @@ describe(
     })
   }
 )
+
+describe('favorite blog', () => {
+  test('of empty list is an empty object', () => {
+    assert.deepStrictEqual(listHelper.favoriteBlog([]), {})
+  })
+
+  test('when list has only one blog is the same blog', () => {
+    assert.deepStrictEqual(listHelper.favoriteBlog([testBlogs[0]]), testBlogs[0])
+  })
+
+  test('of a bigger list is found right', () => {
+    assert.deepStrictEqual(listHelper.favoriteBlog(testBlogs), testBlogs[2])
+  })
+})
