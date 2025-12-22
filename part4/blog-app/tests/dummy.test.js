@@ -103,3 +103,18 @@ describe('most occurring author', () => {
     assert.deepStrictEqual(listHelper.mostBlogs(testBlogs), { author: 'Robert C. Martin', blogs: 3 })
   })
 })
+
+
+describe('most likes by author', () => {
+  test('of empty list is undefined', () => {
+    assert.strictEqual(listHelper.mostLikes([]), undefined)
+  })
+
+  test('when list has only one blog is the same as in that blog', () => {
+    assert.deepStrictEqual(listHelper.mostLikes([testBlogs[0]]), { author: 'Michael Chan', likes: 7 })
+  })
+
+  test('of a bigger list is found right and the amount of likes is correct', () => {
+    assert.deepStrictEqual(listHelper.mostLikes(testBlogs), { author: 'Edsger W. Dijkstra', likes: 17 })
+  })
+})
