@@ -28,6 +28,27 @@ test('each blog has a mapped id property', async () => {
   })
 })
 
+test('blogs is saved correctly', async  () => {
+  const newBlog = {
+    author: 'Test Author',
+    title: 'Test Title',
+    url: 'http://testurl.com',
+    likes: 3
+  }
+  const response = await api.post('/api/blogs').send(newBlog)
+  const responseBodyCopyWithoutId =
+    { author: response.body.author, title: response.body.title, url: response.body.url, likes: response.body.likes }
+  assert.strictEqual(response.status, 201)
+  assert.deepStrictEqual(responseBodyCopyWithoutId, newBlog)
+
+  const blogsInDb = await helper.blogsInDB()
+  assert.strictEqual(blogsInDb.length, helper.initialBlogs.length + 1)
+
+  const newBlogInDb = blogsInDb.find(blog => blog.title === 'Test Title')
+  assert.deepStrictEqual(response.body, newBlogInDb)
+
+})
+
 after(async () => {
   await Blog.deleteMany({})
   await mongoose.connection.close()
