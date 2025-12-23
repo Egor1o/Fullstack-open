@@ -66,6 +66,18 @@ test('adding a new blog without likes property sets likes to 0', async () => {
   assert.deepStrictEqual(response.body.likes, newBlogInDb.likes)
 })
 
+test('Adding a new blog without title and url properties returns status code 400', async () => {
+  const newBlogWithoutTitle = { author: 'Test Author1', url: 'http://testurl1.com' }
+  const response1 = await api.post('/api/blogs').send(newBlogWithoutTitle)
+  assert.strictEqual(response1.status, 400)
+  const newBlogWithoutUrl = { author: 'Test Author2', title: 'Test Title2' }
+  const response2 = await api.post('/api/blogs').send(newBlogWithoutUrl)
+  assert.strictEqual(response2.status, 400)
+  const newBlogWithoutTitleAndUrl = { author: 'Test Author3' }
+  const response3 = await api.post('/api/blogs').send(newBlogWithoutTitleAndUrl)
+  assert.strictEqual(response3.status, 400)
+})
+
 after(async () => {
   await Blog.deleteMany({})
   await mongoose.connection.close()
