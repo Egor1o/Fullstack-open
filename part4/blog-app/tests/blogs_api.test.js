@@ -49,6 +49,23 @@ test('blogs is saved correctly', async  () => {
 
 })
 
+test('adding a new blog without likes property sets likes to 0', async () => {
+  const newBlog = {
+    author: 'Test Author',
+    title: 'Test Title',
+    url: 'http://testurl.com',
+  }
+  const response = await api.post('/api/blogs').send(newBlog)
+  assert.strictEqual(response.status, 201)
+  assert.strictEqual(response.body.likes, 0)
+
+  const blogsInDb = await helper.blogsInDB()
+  assert.strictEqual(blogsInDb.length, helper.initialBlogs.length + 1)
+
+  const newBlogInDb = blogsInDb.find(blog => blog.title === 'Test Title')
+  assert.deepStrictEqual(response.body.likes, newBlogInDb.likes)
+})
+
 after(async () => {
   await Blog.deleteMany({})
   await mongoose.connection.close()
