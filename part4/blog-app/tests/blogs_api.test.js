@@ -85,6 +85,49 @@ describe('when there are blogs initially saved', () => {
       assert.strictEqual(response3.status, 400)
     })
   })
+
+  describe('updating an existing blog', () => {
+    test('with a correct data returns an updated object', async () => {
+      const blogsAtStart = await helper.blogsInDB()
+      const blogToUpdate = blogsAtStart[0]
+
+      const updatedBlogData = {
+        title: 'Updated Title',
+        likes: 12,
+        author: blogToUpdate.author,
+        url: blogToUpdate.url
+      }
+
+      const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlogData)
+      assert.strictEqual(response.status, 200)
+      assert.deepStrictEqual(response.body, { ...updatedBlogData, id: blogToUpdate.id })
+    })
+
+    test('with a correct data does not change other fields', async () => {
+      const blogsAtStart = await helper.blogsInDB()
+      const blogToUpdate = blogsAtStart[0]
+
+      const updatedBlogData = {
+        likes: 12
+      }
+
+      const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlogData)
+      assert.strictEqual(response.status, 200)
+      assert.strictEqual(response.body.author, blogToUpdate.author)
+      assert.strictEqual(response.body.url, blogToUpdate.url)
+      assert.strictEqual(response.body.title, blogToUpdate.title)
+    })
+
+    test('with a correct data does not change the number of blogs', async () => {
+      const blogsAtStart = await helper.blogsInDB()
+      const blogToUpdate = blogsAtStart[0]
+      const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send({})
+      assert.strictEqual(response.status, 200)
+      const blogsAtEnd = await helper.blogsInDB()
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+    })
+
+  })
   after(async () => {
     await Blog.deleteMany({})
     await mongoose.connection.close()
