@@ -48,7 +48,42 @@ const initialBlogs = [
     __v: 0
   }
 ]
+
+const initialUsers = [
+  {
+    _id: '5a422a851b54a676234d17f7',
+    username: 'mchan',
+    name: 'Michael Chan',
+    passwordHash: '$2b$10$KIX/8Qh8Qh8Qh8Qh8Qh8QeQh8Qh8Qh8Qh8Qh8Qh8Qh8Qh8Qh8Qh8Q',
+    blogs: [],
+    __v: 0
+  },
+  {
+    _id: '5a422aa71b54a676234d17f8',
+    username: 'edijkstra',
+    name: 'Edsger W. Dijkstra',
+    passwordHash: '$2b$10$7s8d7f8s7d8f7s8d7f8s7d8f7s8d7f8s7d8f7s8d7f8s7d8f7s8d7',
+    blogs: [],
+    __v: 0
+  },
+  {
+    _id: '5a422b891b54a676234d17fa',
+    username: 'rcmartin',
+    name: 'Robert C. Martin',
+    passwordHash: '$2b$10$9a8b7c6d5e4f3g2h1i0j9a8b7c6d5e4f3g2h1i0j9a8b7c6d5e4f3g',
+    blogs: [],
+    __v: 0
+  }
+]
+
+
 const Blog = require('../models/blogs')
+const User = require('../models/users')
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
 const blogsInDB = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
@@ -56,6 +91,8 @@ const blogsInDB = async () => {
 
 module.exports = {
   initialBlogs,
-  blogsInDB
+  initialUsers,
+  blogsInDB,
+  usersInDb
 }
 
