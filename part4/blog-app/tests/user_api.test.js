@@ -86,7 +86,8 @@ describe('When there are users initially saved', () => {
     })
   })
 
-  after(() => {
-    mongoose.connection.close()
+  after(async () => {
+    await User.deleteMany({})
+    await mongoose.connection.close()
   })
 })
