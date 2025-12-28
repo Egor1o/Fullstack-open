@@ -1,20 +1,28 @@
 const Blog = require('../models/blogs')
 const blogsRouter = require('express').Router()
 const User = require('../models/users')
+const jwt = require('jsonwebtoken')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   return response.json(blogs)
 })
 
-
 blogsRouter.post('/', async (request, response) => {
   if(!request.body || !request.body.url || !request.body.title)
     return response.status(400).json('Title or url missing')
 
-  // random user for now ex 4.19
-  const users = await User.find({})
-  const user = users[0]
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({ ...request.body, likes: request.body.likes || 0, user: user._id })
   const savedBlog = await blog.save()
