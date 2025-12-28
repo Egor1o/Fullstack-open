@@ -9,7 +9,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   if(!request.body || !request.body.url || !request.body.title)
-    return response.status(400).end()
+    return response.status(400).json('Title or url missing')
 
   const blog = new Blog({ ...request.body, likes: request.body.likes || 0 })
   const savedBlog = await blog.save()
@@ -24,7 +24,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
-    return response.status(404).end()
+    return response.status(404).json({ error: 'Blog is not found' })
   }
 
   blog.title = request.body.title ? request.body.title : blog.title
