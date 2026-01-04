@@ -5,12 +5,14 @@ const assert = require('node:assert')
 const mongoose = require('mongoose')
 const helper = require('./test_helper')
 const Blog = require('../models/blogs')
-
 const api = supertest(app)
+const User = require('../models/users')
 
 describe('when there are blogs initially saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+    await helper.createAndSaveMockUser()
     await Blog.insertMany(helper.initialBlogs)
   })
 
@@ -36,13 +38,18 @@ describe('when there are blogs initially saved', () => {
 
   describe('addition of a new blog/blogs ', () => {
     test('succeeds with valid data', async  () => {
+      const authResponse = await api.post('/api/login').send({
+        username: helper.mockTestUser.username,
+        password: helper.mockTestUser.password
+      })
+      const token = authResponse.body.token
       const newBlog = {
         author: 'Test Author',
         title: 'Test Title',
         url: 'http://testurl.com',
         likes: 3
       }
-      const response = await api.post('/api/blogs').send(newBlog)
+      const response = await api.post('/api/blogs').send(newBlog).set('Authorization', `Bearer ${token}`)
       const responseBodyCopyWithoutId =
         { author: response.body.author, title: response.body.title, url: response.body.url, likes: response.body.likes }
       assert.strictEqual(response.status, 201)
@@ -52,17 +59,22 @@ describe('when there are blogs initially saved', () => {
       assert.strictEqual(blogsInDb.length, helper.initialBlogs.length + 1)
 
       const newBlogInDb = blogsInDb.find(blog => blog.title === 'Test Title')
-      assert.deepStrictEqual(response.body, newBlogInDb)
+      assert.deepStrictEqual(response.body, { ...newBlogInDb, user: newBlogInDb.user.toString() })
 
     })
 
     test('without likes property sets likes to 0', async () => {
+      const authResponse = await api.post('/api/login').send({
+        username: helper.mockTestUser.username,
+        password: helper.mockTestUser.password
+      })
+      const token = authResponse.body.token
       const newBlog = {
         author: 'Test Author',
         title: 'Test Title',
         url: 'http://testurl.com',
       }
-      const response = await api.post('/api/blogs').send(newBlog)
+      const response = await api.post('/api/blogs').send(newBlog).set('Authorization', `Bearer ${token}`)
       assert.strictEqual(response.status, 201)
       assert.strictEqual(response.body.likes, 0)
 
@@ -74,14 +86,19 @@ describe('when there are blogs initially saved', () => {
     })
 
     test('without title, url or both properties returns status code 400', async () => {
+      const authResponse = await api.post('/api/login').send({
+        username: helper.mockTestUser.username,
+        password: helper.mockTestUser.password
+      })
+      const token = authResponse.body.token
       const newBlogWithoutTitle = { author: 'Test Author1', url: 'http://testurl1.com' }
-      const response1 = await api.post('/api/blogs').send(newBlogWithoutTitle)
+      const response1 = await api.post('/api/blogs').send(newBlogWithoutTitle).set('Authorization', `Bearer ${token}`)
       assert.strictEqual(response1.status, 400)
       const newBlogWithoutUrl = { author: 'Test Author2', title: 'Test Title2' }
-      const response2 = await api.post('/api/blogs').send(newBlogWithoutUrl)
+      const response2 = await api.post('/api/blogs').send(newBlogWithoutUrl).set('Authorization', `Bearer ${token}`)
       assert.strictEqual(response2.status, 400)
       const newBlogWithoutTitleAndUrl = { author: 'Test Author3' }
-      const response3 = await api.post('/api/blogs').send(newBlogWithoutTitleAndUrl)
+      const response3 = await api.post('/api/blogs').send(newBlogWithoutTitleAndUrl).set('Authorization', `Bearer ${token}`)
       assert.strictEqual(response3.status, 400)
     })
   })

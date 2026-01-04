@@ -1,6 +1,7 @@
 const logger = require('./logger')
 const jwt = require('jsonwebtoken')
 const User = require('../models/users')
+const { SECRET } = require('./config')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -28,7 +29,7 @@ const tokenExtractor = (request, response, next) => {
 
 const userExtractor = async (request, response, next) => {
   const token = request.token
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(token, SECRET)
   request.user = await User.findById(decodedToken.id)
   next()
 }

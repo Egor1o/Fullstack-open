@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const initialBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
@@ -89,10 +90,29 @@ const blogsInDB = async () => {
   return blogs.map(blog => blog.toJSON())
 }
 
+const mockTestUser = {
+  username: 'testuser',
+  name: 'Test User',
+  password: '12345'
+}
+
+const createAndSaveMockUser = async () => {
+  const SALT_ROUNDS = 10
+  const passwordHash = await bcrypt.hash(mockTestUser.password, SALT_ROUNDS)
+  const user = new User({
+    username: mockTestUser.username,
+    name: mockTestUser.name,
+    passwordHash
+  })
+  await user.save()
+}
+
 module.exports = {
   initialBlogs,
   initialUsers,
+  mockTestUser,
   blogsInDB,
-  usersInDb
+  usersInDb,
+  createAndSaveMockUser
 }
 
