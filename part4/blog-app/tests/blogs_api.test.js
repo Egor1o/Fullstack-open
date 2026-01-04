@@ -145,6 +145,43 @@ describe('when there are blogs initially saved', () => {
     })
 
   })
+
+
+  describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid and user is authorized', async () => {
+      const blogsAtStart = await helper.blogsInDB()
+      const authResponse = await api.post('/api/login').send({
+        username: helper.mockTestUser.username,
+        password: helper.mockTestUser.password
+      })
+      const token = authResponse.body.token
+      const newBlog = {
+        author: 'Test Author',
+        title: 'Test Title',
+        url: 'http://testurl.com',
+      }
+      const response = await api.post('/api/blogs').send(newBlog).set('Authorization', `Bearer ${token}`)
+      const blogToDeleteId = response.body.id
+      const deleteResponse = await api.delete(`/api/blogs/${blogToDeleteId}`).set('Authorization', `Bearer ${token}`)
+      const blogsAtEnd = await helper.blogsInDB()
+      assert.strictEqual(deleteResponse.status, 204)
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+      const deletedBlog = blogsAtEnd.find(blog => blog.id === blogToDeleteId)
+      assert.strictEqual(deletedBlog, undefined)
+    })
+    test('fails with status code 401 if user is not authorized', async () => {
+      const blogsAtStart = await helper.blogsInDB()
+      const blogToDelete = blogsAtStart[0]
+      const authResponse = await api.post('/api/login').send({
+        username: helper.mockTestUser.username,
+        password: helper.mockTestUser.password
+      })
+      const token = authResponse.body.token
+      await api.delete(`/api/blogs/${blogToDelete.id}`).set('Authorization', `Bearer ${token}`)
+      const blogsAtEnd = await helper.blogsInDB()
+      assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+    })
+  })
   after(async () => {
     await Blog.deleteMany({})
     await mongoose.connection.close()
