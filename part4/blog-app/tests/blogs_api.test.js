@@ -37,6 +37,16 @@ describe('when there are blogs initially saved', () => {
   })
 
   describe('addition of a new blog/blogs ', () => {
+    test('without attached token returns status code 401', async () => {
+      const newBlog = {
+        author: 'Test Author',
+        title: 'Test Title',
+        url: 'http://testurl.com',
+        likes: 3
+      }
+      await api.post('/api/blogs').send(newBlog).expect(401)
+    })
+
     test('succeeds with valid data', async  () => {
       const authResponse = await api.post('/api/login').send({
         username: helper.mockTestUser.username,
