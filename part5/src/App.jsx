@@ -61,8 +61,18 @@ const App = () => {
 
       {user && (
         <div>
-          <p>{user.name} logged in</p>
-          <BlogForm />
+          <label>
+            {user.name} logged in
+            <button
+              onClick={() => {
+                window.localStorage.removeItem("loggedBlogappUser");
+                setUser(null);
+              }}
+            >
+              Log Out
+            </button>
+          </label>
+          {/*<BlogForm />*/}
         </div>
       )}
 
