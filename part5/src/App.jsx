@@ -50,23 +50,21 @@ const App = () => {
       )}
 
       {user && (
-        <>
-          <div>
-            <label>
-              {user.name} logged in
-              <button
-                onClick={() => {
-                  window.localStorage.removeItem("loggedBlogappUser");
-                  setUser(null);
-                  blogService.setToken(null);
-                }}
-              >
-                Log Out
-              </button>
-            </label>
-            <BlogForm makeNotification={makeNotification} />
-          </div>
-        </>
+        <div>
+          <label>
+            {user.name} logged in
+            <button
+              onClick={() => {
+                window.localStorage.removeItem("loggedBlogappUser");
+                setUser(null);
+                blogService.setToken(null);
+              }}
+            >
+              Log Out
+            </button>
+          </label>
+          <BlogForm makeNotification={makeNotification} />
+        </div>
       )}
       <div>
         {blogs.map((blog) => (
