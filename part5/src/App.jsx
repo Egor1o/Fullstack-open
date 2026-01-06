@@ -3,11 +3,20 @@ import Blog from "./components/Blog.jsx";
 import blogService from "./services/blogs.js";
 import { LoginForm } from "./components/LoginForm.jsx";
 import { BlogForm } from "./components/BlogForm.jsx";
+import Notification from "./components/Notification.jsx";
+import "./index.css";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [notification, setNotification] = useState(null);
+
+  const makeNotification = (isError, message) => {
+    setNotification({ isError, message });
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+  };
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -28,8 +37,15 @@ const App = () => {
 
   return (
     <div>
+      {notification !== null ? (
+        <Notification
+          message={notification.message}
+          isError={notification.isError}
+        />
+      ) : null}
+
       {!user && (
-        <LoginForm setUser={setUser} setErrorMessage={setErrorMessage} />
+        <LoginForm setUser={setUser} makeNotification={makeNotification} />
       )}
 
       {user && (
@@ -46,11 +62,12 @@ const App = () => {
               Log Out
             </button>
           </label>
-          <BlogForm />
+          <BlogForm makeNotification={makeNotification} />
         </div>
       )}
 
       <h2>blogs</h2>
+
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}

@@ -1,20 +1,30 @@
 import { useState } from "react";
 import blogService from "../services/blogs.js";
 
-export const BlogForm = () => {
+export const BlogForm = ({ makeNotification }) => {
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const handleBlogAddition = async (event) => {
     event.preventDefault();
 
-    const result = await blogService.create({
-      title,
-      author,
-      url,
-    });
-
-    console.log("success", result);
+    try {
+      const result = await blogService.create({
+        title,
+        author,
+        url,
+      });
+      makeNotification(
+        false,
+        `a new blog ${result.title} by ${result.author} added`,
+      );
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (error) {
+      //forgot to add .error to the end of error.response.data in 4th part.
+      makeNotification(true, error.response.data);
+    }
   };
   return (
     <form onSubmit={handleBlogAddition}>
