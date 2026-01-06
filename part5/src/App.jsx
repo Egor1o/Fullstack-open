@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog.jsx";
 import blogService from "./services/blogs.js";
-import loginService from "./services/login.js";
 import { LoginForm } from "./components/LoginForm.jsx";
 import { BlogForm } from "./components/BlogForm.jsx";
 
@@ -41,12 +40,13 @@ const App = () => {
               onClick={() => {
                 window.localStorage.removeItem("loggedBlogappUser");
                 setUser(null);
+                blogService.setToken(null);
               }}
             >
               Log Out
             </button>
           </label>
-          {/*<BlogForm />*/}
+          <BlogForm />
         </div>
       )}
 
