@@ -23,7 +23,6 @@ export const LoginForm = ({ setUser, makeNotification }) => {
   };
   return (
     <div>
-      <h2>log in to application</h2>
       <form onSubmit={handleLogin}>
         <div>
           <label>

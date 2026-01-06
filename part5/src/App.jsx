@@ -37,6 +37,7 @@ const App = () => {
 
   return (
     <div>
+      <h2>{user === null ? "log in to application" : "blogs"}</h2>
       {notification !== null ? (
         <Notification
           message={notification.message}
@@ -49,32 +50,29 @@ const App = () => {
       )}
 
       {user && (
-        <div>
-          <label>
-            {user.name} logged in
-            <button
-              onClick={() => {
-                window.localStorage.removeItem("loggedBlogappUser");
-                setUser(null);
-                blogService.setToken(null);
-              }}
-            >
-              Log Out
-            </button>
-          </label>
-          <BlogForm makeNotification={makeNotification} />
-        </div>
-      )}
-
-      {user && (
         <>
-          <h2>blogs</h2>
-
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          <div>
+            <label>
+              {user.name} logged in
+              <button
+                onClick={() => {
+                  window.localStorage.removeItem("loggedBlogappUser");
+                  setUser(null);
+                  blogService.setToken(null);
+                }}
+              >
+                Log Out
+              </button>
+            </label>
+            <BlogForm makeNotification={makeNotification} />
+          </div>
         </>
       )}
+      <div>
+        {blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} />
+        ))}
+      </div>
     </div>
   );
 };
