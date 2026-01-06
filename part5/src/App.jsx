@@ -7,28 +7,8 @@ import { BlogForm } from "./components/BlogForm.jsx";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch {
-      setErrorMessage("wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -50,13 +30,7 @@ const App = () => {
   return (
     <div>
       {!user && (
-        <LoginForm
-          handleLogin={handleLogin}
-          password={password}
-          setPassword={setPassword}
-          setUsername={setUsername}
-          username={username}
-        />
+        <LoginForm setUser={setUser} setErrorMessage={setErrorMessage} />
       )}
 
       {user && (
