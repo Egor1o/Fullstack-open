@@ -27,13 +27,20 @@ const App = () => {
     }
   }, []);
 
+  const getAllBlogs = async () => {
+    const allBlogs = await blogService.getAll();
+    setBlogs(allBlogs);
+  };
+
   useEffect(() => {
-    const getAllBlogs = async () => {
-      const allBlogs = await blogService.getAll();
-      setBlogs(allBlogs);
-    };
-    getAllBlogs();
-  }, []);
+    if (user !== null) {
+      getAllBlogs();
+    }
+
+    if (user === null) {
+      setBlogs([]);
+    }
+  }, [user]);
 
   return (
     <div>
